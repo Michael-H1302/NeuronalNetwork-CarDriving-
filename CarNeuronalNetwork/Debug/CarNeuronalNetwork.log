@@ -1,4 +1,8 @@
-﻿  main.cpp
+﻿  OutputNeuron.cpp
+  InputNeuron.cpp
+  HiddenNeuron.cpp
+  Connection.cpp
+  main.cpp
   App.cpp
   Code wird generiert...
-  CarNeuronalNetwork.vcxproj -> c:\users\micha\Desktop\CarNeuronalNetwork\Debug\CarNeuronalNetwork.exe
+  CarNeuronalNetwork.vcxproj -> C:\Users\micha\Desktop\CarNeuronalNetwork\Debug\CarNeuronalNetwork.exe

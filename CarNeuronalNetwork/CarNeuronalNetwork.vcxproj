@@ -118,9 +118,18 @@
   <ItemGroup>
     <ClCompile Include="code\App\App.cpp" />
     <ClCompile Include="code\main.cpp" />
+    <ClCompile Include="code\Neurons\Connection\Connection.cpp" />
+    <ClCompile Include="code\Neurons\HiddenNeuron\HiddenNeuron.cpp" />
+    <ClCompile Include="code\Neurons\InputNeuron\InputNeuron.cpp" />
+    <ClCompile Include="code\Neurons\OutputNeuron\OutputNeuron.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\App\App.h" />
+    <ClInclude Include="code\Neurons\Connection\Connection.h" />
+    <ClInclude Include="code\Neurons\HiddenNeuron\HiddenNeuron.h" />
+    <ClInclude Include="code\Neurons\InputNeuron\InputNeuron.h" />
+    <ClInclude Include="code\Neurons\Neuron.h" />
+    <ClInclude Include="code\Neurons\OutputNeuron\OutputNeuron.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

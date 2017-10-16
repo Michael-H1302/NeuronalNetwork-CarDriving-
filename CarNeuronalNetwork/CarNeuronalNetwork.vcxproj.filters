@@ -19,6 +19,36 @@
     <Filter Include="Quelldateien\App">
       <UniqueIdentifier>{fcea5e4b-af09-435b-b09a-5f090a076283}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Neurons">
+      <UniqueIdentifier>{b2b98bad-0b7c-41e3-b5c8-20f86cb3987f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Neurons">
+      <UniqueIdentifier>{9805bf36-4f39-49c0-9e64-6dd072ae9e4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Neurons\InputNeuron">
+      <UniqueIdentifier>{ff1f4df3-0d76-450a-99ef-54ca7495804c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Neurons\InputNeuron">
+      <UniqueIdentifier>{372082b8-0509-4c59-8009-237c5de205ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Neurons\HiddenNeuron">
+      <UniqueIdentifier>{e80c1805-d43f-47ab-8777-9a4c2eed5fa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Neurons\HiddenNeuron">
+      <UniqueIdentifier>{48954a03-a658-42b1-8973-a15481bba7b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Neurons\OutputNeuron">
+      <UniqueIdentifier>{f6e0b740-fe00-4c9a-9e98-1734434a3e14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Neurons\OutputNeuron">
+      <UniqueIdentifier>{db4744fa-b587-4cfc-a80f-cd1115094e31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Neurons\Connection">
+      <UniqueIdentifier>{5ffb53a2-d316-4f73-9b6d-027bf495a2b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Neurons\Connection">
+      <UniqueIdentifier>{62bf092d-ed48-4e5d-88ac-e0b3689c8e3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\main.cpp">
@@ -27,10 +57,37 @@
     <ClCompile Include="code\App\App.cpp">
       <Filter>Quelldateien\App</Filter>
     </ClCompile>
+    <ClCompile Include="code\Neurons\InputNeuron\InputNeuron.cpp">
+      <Filter>Quelldateien\Neurons\InputNeuron</Filter>
+    </ClCompile>
+    <ClCompile Include="code\Neurons\HiddenNeuron\HiddenNeuron.cpp">
+      <Filter>Quelldateien\Neurons\HiddenNeuron</Filter>
+    </ClCompile>
+    <ClCompile Include="code\Neurons\OutputNeuron\OutputNeuron.cpp">
+      <Filter>Quelldateien\Neurons\OutputNeuron</Filter>
+    </ClCompile>
+    <ClCompile Include="code\Neurons\Connection\Connection.cpp">
+      <Filter>Quelldateien\Neurons\Connection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\App\App.h">
       <Filter>Headerdateien\App</Filter>
+    </ClInclude>
+    <ClInclude Include="code\Neurons\InputNeuron\InputNeuron.h">
+      <Filter>Headerdateien\Neurons\InputNeuron</Filter>
+    </ClInclude>
+    <ClInclude Include="code\Neurons\HiddenNeuron\HiddenNeuron.h">
+      <Filter>Headerdateien\Neurons\HiddenNeuron</Filter>
+    </ClInclude>
+    <ClInclude Include="code\Neurons\OutputNeuron\OutputNeuron.h">
+      <Filter>Headerdateien\Neurons\OutputNeuron</Filter>
+    </ClInclude>
+    <ClInclude Include="code\Neurons\Neuron.h">
+      <Filter>Headerdateien\Neurons</Filter>
+    </ClInclude>
+    <ClInclude Include="code\Neurons\Connection\Connection.h">
+      <Filter>Headerdateien\Neurons\Connection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
