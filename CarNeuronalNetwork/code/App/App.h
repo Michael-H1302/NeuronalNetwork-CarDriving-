@@ -2,6 +2,8 @@
 #include <SFML\Graphics.hpp>
 #include <ctime>
 
+#include "Map\Map.h"
+
 #include "..\Neurons\Neuron.h"
 #include "..\Neurons\InputNeuron\InputNeuron.h"
 #include "..\Neurons\HiddenNeuron\HiddenNeuron.h"
@@ -26,6 +28,8 @@ class App
 		void DeleteNetwork();
 		void CreateNewNetwork();		
 		void ResetCar();
+		void CreateMap();
+		void CreateCar();
 
 		sf::RenderWindow _AppWindow;
 
@@ -39,8 +43,6 @@ class App
 		std::vector<sf::RectangleShape*> _Sensors;
 		sf::RectangleShape _Car;
 		
-		float _LastDistance;
-		int _LastTime;
-		int _SameGeneration;
-		sf::Clock _Timer, _Seed;
+		float _LastDistance, _CurrentDistance;
+		sf::Clock _Timer;
 };

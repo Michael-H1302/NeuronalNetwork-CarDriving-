@@ -49,6 +49,12 @@
     <Filter Include="Quelldateien\Neurons\Connection">
       <UniqueIdentifier>{62bf092d-ed48-4e5d-88ac-e0b3689c8e3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\App\Map">
+      <UniqueIdentifier>{4d6962fc-6f62-4d82-9858-41eb424ecdb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\App\Map">
+      <UniqueIdentifier>{2995cfa1-64f5-4ef2-bd34-8693ee536bf9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\main.cpp">
@@ -69,6 +75,9 @@
     <ClCompile Include="code\Neurons\Connection\Connection.cpp">
       <Filter>Quelldateien\Neurons\Connection</Filter>
     </ClCompile>
+    <ClCompile Include="code\App\Map\Map.cpp">
+      <Filter>Quelldateien\App\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\App\App.h">
@@ -88,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="code\Neurons\Connection\Connection.h">
       <Filter>Headerdateien\Neurons\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="code\App\Map\Map.h">
+      <Filter>Headerdateien\App\Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

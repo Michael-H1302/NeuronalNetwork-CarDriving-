@@ -7,67 +7,15 @@ App::App()
 
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(100, 50);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(10, 900));
-	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
-
-	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(1000, 50);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(10, 900));
-	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
-
-	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(100, 50);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(900, 10));
-	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
-
-	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(100, 950);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(900, 10));
-	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
-
-	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(300, 700);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(10, 300));
-	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
-
-	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(100, 450);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(300, 10));
-	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
-
-
+	
+	this->CreateMap();
 	this->CreateNewNetwork();
+	this->CreateCar();
 
-	_Car.setFillColor(sf::Color(255, 255, 255));
-	_Car.setSize(sf::Vector2f(64, 64));
-	_Car.setOrigin(32, 32);
-	_Car.setPosition(200, 850);
 
-	_Sensors.push_back(new sf::RectangleShape);
-	_Sensors[_Sensors.size() - 1]->setFillColor(sf::Color(0, 255, 0));
-	_Sensors[_Sensors.size() - 1]->setOrigin(sf::Vector2f(3, 96));
-	_Sensors[_Sensors.size() - 1]->setSize(sf::Vector2f(3, 96));
-	_Sensors[_Sensors.size() - 1]->setRotation(-45);
-	_Sensors[_Sensors.size() - 1]->setPosition(_Car.getPosition());
-
-	_Sensors.push_back(new sf::RectangleShape);
-	_Sensors[_Sensors.size() - 1]->setFillColor(sf::Color(0, 255, 0));
-	_Sensors[_Sensors.size() - 1]->setOrigin(sf::Vector2f(3, 96));
-	_Sensors[_Sensors.size() - 1]->setSize(sf::Vector2f(3, 96));
-	_Sensors[_Sensors.size() - 1]->setPosition(_Car.getPosition());
-
-	_Sensors.push_back(new sf::RectangleShape);
-	_Sensors[_Sensors.size() - 1]->setFillColor(sf::Color(0, 255, 0));
-	_Sensors[_Sensors.size() - 1]->setOrigin(sf::Vector2f(1, 96));
-	_Sensors[_Sensors.size() - 1]->setSize(sf::Vector2f(3, 96));
-	_Sensors[_Sensors.size() - 1]->setRotation(45);
-	_Sensors[_Sensors.size() - 1]->setPosition(_Car.getPosition());
 
 	_LastDistance = 0;
-	_LastTime = 0;
-	_SameGeneration = 0;
+	_CurrentDistance = 0;
 	_Timer.restart();
 
 }
@@ -109,7 +57,7 @@ void App::Render()
 void App::Update()
 {
 	/* Input Werte setzen */
-	float Value1 = 4;//2
+	float Value1 = 6;
 	_Sensors[0]->setFillColor(sf::Color(0, 255, 0));
 	for (unsigned int c = 0; c < _Map.size(); c++)
 	{
@@ -121,7 +69,7 @@ void App::Update()
 	}
 	_Input[0]->SetValue(Value1);
 
-	float Value2 = 4;//2
+	float Value2 = 6;//2
 	_Sensors[1]->setFillColor(sf::Color(0, 255, 0));
 	for (unsigned int c = 0; c < _Map.size(); c++)
 	{
@@ -133,7 +81,7 @@ void App::Update()
 	}
 	_Input[1]->SetValue(Value2);
 
-	float Value3 = 4;//2
+	float Value3 = 6;//2
 	_Sensors[2]->setFillColor(sf::Color(0, 255, 0));
 	for (unsigned int c = 0; c < _Map.size(); c++)
 	{
@@ -157,14 +105,15 @@ void App::Update()
 	_Sensors[2]->setPosition(_Car.getPosition());
 	_Sensors[2]->setRotation(45 + _Car.getRotation());
 
-	if (_Output[0]->GetValue() > 0.5f)//0.7
+	_Car.rotate(_Output[0]->GetValue() - 0.5f);
+	/*if (_Output[0]->GetValue() > 0.5f)//0.7
 	{
 		_Car.rotate(1);
 	}
 	if (_Output[0]->GetValue() < 0.5f)//0.3
 	{
 		_Car.rotate(-1);
-	}
+	}*/
 
 	float Speed = _Output[1]->GetValue();
 	float Radiant = ((2 * 3.14f) / 360) * _Car.getRotation();
@@ -180,6 +129,7 @@ void App::Update()
 		YMovement = abs(YMovement);
 	}
 	_Car.move(XMovement, YMovement);
+	_CurrentDistance = _CurrentDistance + abs(XMovement) + abs(YMovement);
 
 	/* Trainer um möglichst schnell vorwärts zu fahren */
 	/*if (_Timer.getElapsedTime().asSeconds() > sf::seconds(5).asSeconds())
@@ -237,28 +187,26 @@ void App::Update()
 	{
 		if (_Car.getGlobalBounds().intersects(_Map[c]->getGlobalBounds()))
 		{
-			float Distance = sqrt(pow(200 - _Car.getPosition().x, 2) + pow(850 - _Car.getPosition().y, 2));
-			std::cout << "Distance: " << Distance << std::endl;
+			std::cout << "Distance: " << _CurrentDistance << std::endl;
 
-			if (Distance > _LastDistance)
+			if (_CurrentDistance > _LastDistance)
 			{
-				_SameGeneration = 0;
 				std::cout << "Mutating..." << std::endl;
 				for (unsigned int c = 0; c < _Connections.size(); c++)
 				{
 					_Connections[c]->Mutate();
 				}
 
-				_LastDistance = Distance;
-	
+				_LastDistance = _CurrentDistance;
+
+				_CurrentDistance = 0;
 				this->ResetCar();
 				_Timer.restart();
 
 				return;
 			}
-			if (Distance < _LastDistance && _LastDistance != 0 && _SameGeneration < 10)
+			if (_CurrentDistance < _LastDistance)
 			{
-				_SameGeneration++;
 				std::cout << "Restoring and mutating..." << std::endl;
 
 				for (unsigned int c = 0; c < _Connections.size(); c++)
@@ -270,23 +218,25 @@ void App::Update()
 					_Connections[c]->Mutate();
 				}
 
+				_CurrentDistance = 0;
 				this->ResetCar();
 				_Timer.restart();
 
 				return;
 			}
-			if (Distance <= 0 || _SameGeneration >= 10)
-			{
-				_SameGeneration = 0;
-				_LastDistance = 0;
-				std::cout << "Creating new network..." << std::endl;
-				this->DeleteNetwork();
-				this->CreateNewNetwork();
-				this->ResetCar();
-
-				_Timer.restart();
-			}
 		}
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+	{
+		_LastDistance = 0;
+		_CurrentDistance = 0;
+		std::cout << "Creating new network..." << std::endl;
+		this->DeleteNetwork();
+		this->CreateNewNetwork();
+		this->ResetCar();
+
+		_Timer.restart();
 	}
 }
 
@@ -370,3 +320,109 @@ void App::ResetCar()
 	_Car.setPosition(200, 850);
 	_Car.setRotation(0);
 }
+
+void App::CreateMap()
+{
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(100, 600);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(10, 350));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(300, 700);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(10, 250));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	std::vector<sf::RectangleShape*> Temp;
+
+	Temp = Map::DrawLine(sf::Vector2f(300, 700), sf::Vector2f(450, 550));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	Temp = Map::DrawLine(sf::Vector2f(100, 600), sf::Vector2f(350, 350));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(350, 350);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(300, 5));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(450, 550);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(50, 5));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	Temp = Map::DrawLine(sf::Vector2f(650, 350), sf::Vector2f(750, 650));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	Temp = Map::DrawLine(sf::Vector2f(500, 550), sf::Vector2f(550, 700));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(750, 650);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 50));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(550, 700);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 100));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	Temp = Map::DrawLine(sf::Vector2f(750, 700), sf::Vector2f(900, 850));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	Temp = Map::DrawLine(sf::Vector2f(550, 800), sf::Vector2f(700, 950));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+}
+
+void App::CreateCar()
+{
+	_Car.setFillColor(sf::Color(255, 255, 255));
+	_Car.setSize(sf::Vector2f(64, 64));
+	_Car.setOrigin(32, 32);
+	_Car.setPosition(200, 850);
+
+	_Sensors.push_back(new sf::RectangleShape);
+	_Sensors[_Sensors.size() - 1]->setFillColor(sf::Color(0, 255, 0));
+	_Sensors[_Sensors.size() - 1]->setOrigin(sf::Vector2f(3, 96));
+	_Sensors[_Sensors.size() - 1]->setSize(sf::Vector2f(3, 96));
+	_Sensors[_Sensors.size() - 1]->setRotation(-45);
+	_Sensors[_Sensors.size() - 1]->setPosition(_Car.getPosition());
+
+	_Sensors.push_back(new sf::RectangleShape);
+	_Sensors[_Sensors.size() - 1]->setFillColor(sf::Color(0, 255, 0));
+	_Sensors[_Sensors.size() - 1]->setOrigin(sf::Vector2f(3, 96));
+	_Sensors[_Sensors.size() - 1]->setSize(sf::Vector2f(3, 96));
+	_Sensors[_Sensors.size() - 1]->setPosition(_Car.getPosition());
+
+	_Sensors.push_back(new sf::RectangleShape);
+	_Sensors[_Sensors.size() - 1]->setFillColor(sf::Color(0, 255, 0));
+	_Sensors[_Sensors.size() - 1]->setOrigin(sf::Vector2f(1, 96));
+	_Sensors[_Sensors.size() - 1]->setSize(sf::Vector2f(3, 96));
+	_Sensors[_Sensors.size() - 1]->setRotation(45);
+	_Sensors[_Sensors.size() - 1]->setPosition(_Car.getPosition());
+	
+	}

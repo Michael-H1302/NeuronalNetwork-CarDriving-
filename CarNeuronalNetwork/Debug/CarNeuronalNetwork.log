@@ -3,6 +3,7 @@
   HiddenNeuron.cpp
   Connection.cpp
   main.cpp
+  Map.cpp
   App.cpp
   Code wird generiert...
   CarNeuronalNetwork.vcxproj -> C:\Users\micha\Desktop\CarNeuronalNetwork\Debug\CarNeuronalNetwork.exe
