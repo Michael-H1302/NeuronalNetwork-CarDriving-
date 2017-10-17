@@ -12,6 +12,7 @@ class Connection
 		void Update();
 		void Mutate();
 		void Restore();
+		void Safe();
 
 		float GetWeight();
 

@@ -3,7 +3,7 @@
 App::App()
 {
 	_AppWindow.create(sf::VideoMode(1920, 1080), "CarNeuronalNetwork");
-	_AppWindow.setFramerateLimit(60);
+	//_AppWindow.setFramerateLimit(60);
 
 	srand(static_cast<unsigned int>(time(NULL)));
 
@@ -13,10 +13,9 @@ App::App()
 	this->CreateCar();
 	this->CreateVisualNetwork();
 
-	_LastDistance = 0;
+	_BestDistance = 0;
 	_CurrentDistance = 0;
-	_Timer.restart();
-
+	_MutationTimes = 0;
 }
 
 
@@ -84,54 +83,69 @@ void App::Update()
 		{
 			std::cout << "Distance: " << _CurrentDistance << std::endl;
 
-			if (_CurrentDistance > _LastDistance)
+			if (_CurrentDistance > _BestDistance + 20) //Wenn die aktuelle Distanz größer ist als die bisher beste Distanz
 			{
-				std::cout << "Mutating..." << std::endl;
-				for (unsigned int c = 0; c < _Connections.size(); c++)
+				std::cout << "Best Distance! Safing..." << std::endl;
+				for (unsigned int c = 0; c < _Connections.size(); c++)	 //Dann speichere das aktuelle Netz, sodass es bei einer Verschlechterung wieder hergestellt werden kann
+				{
+					_Connections[c]->Safe();	
+				}
+				for (unsigned int c = 0; c < _Connections.size(); c++)	//Versuche das Netz zu verbessern
 				{
 					_Connections[c]->Mutate();
 				}
 
-				_LastDistance = _CurrentDistance;
+				_BestDistance = _CurrentDistance;	//Speichere die aktuelle Distanz als beste Distanz
 
-				_CurrentDistance = 0;
-				this->ResetCar();
-				_Timer.restart();
+				_MutationTimes = 0;
+				_CurrentDistance = 0;		//Aktuelle Distanz 0
+				this->ResetCar();			//Car resetten
 
 				return;
 			}
-			if (_CurrentDistance < _LastDistance)
-			{
-				std::cout << "Restoring and mutating..." << std::endl;
+			if (_CurrentDistance <= _BestDistance && _MutationTimes < 20)	 //Wenn die gerade erziehlte Distanz kleiner ist als die beste Distanz -> nachsehen wie viele Generationen die beste Distanz zurückliegt
+			{																//Das Netz hat 20 Mutationen Zeit, seine letzte beste Leistung zu übertreffen, ansonsten -> zurücksetzen auf letzen besten Stand
+				std::cout << "Mutating... Mutation " << _MutationTimes << "/" << "20" << std::endl;
 
-				for (unsigned int c = 0; c < _Connections.size(); c++)
-				{
-					_Connections[c]->Restore();
-				}
 				for (unsigned int c = 0; c < _Connections.size(); c++)
 				{
 					_Connections[c]->Mutate();
 				}
 
+				_MutationTimes++;
 				_CurrentDistance = 0;
 				this->ResetCar();
-				_Timer.restart();
 
 				return;
+			}
+			if (_MutationTimes >= 10) //Wenn nach 10 Mutationen die alte beste Distanz nicht übertroffen wurde -> zurücksetzen
+			{
+				std::cout << "Evolution failed! Restoring old neural net..." << std::endl;
+				for (unsigned int c = 0; c < _Connections.size(); c++)	 //Dann speichere das aktuelle Netz, sodass es bei einer Verschlechterung wieder hergestellt werden kann
+				{
+					_Connections[c]->Restore();
+				}
+				for (unsigned int c = 0; c < _Connections.size(); c++)	//Neu versuchen
+				{
+					_Connections[c]->Mutate();
+				}
+
+				_MutationTimes = 0;
+				_CurrentDistance = 0;
+				this->ResetCar();
 			}
 		}
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
 	{
-		_LastDistance = 0;
+		_MutationTimes = 0;
+		_BestDistance = 0;
 		_CurrentDistance = 0;
 		std::cout << "Creating new network..." << std::endl;
 		this->DeleteNetwork();
 		this->CreateNewNetwork();
 		this->ResetCar();
-
-		_Timer.restart();
 	}
 }
 
@@ -197,8 +211,8 @@ void App::UpdateCar()
 
 	float Speed = _Output[1]->GetValue();
 	float Radiant = ((2 * 3.14f) / 360) * _Car.getRotation();
-	float YMovement = cos(Radiant) + 0.5f * Speed;//5
-	float XMovement = sin(Radiant) + 0.5f * Speed;//5
+	float YMovement = cos(Radiant) * Speed + cos(Radiant) * 1.2f;//5
+	float XMovement = sin(Radiant) * Speed + sin(Radiant) * 1.2f;//5
 
 	if (_Car.getRotation() > 270 || _Car.getRotation() < 90)
 	{
@@ -311,7 +325,7 @@ void App::ResetCar()
 void App::CreateMap()
 {
 	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(100, 600);
+	_Map[_Map.size() - 1]->setPosition(140, 600);
 	_Map[_Map.size() - 1]->setSize(sf::Vector2f(10, 350));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 
@@ -329,7 +343,7 @@ void App::CreateMap()
 	}
 	Temp.clear();
 
-	Temp = Map::DrawLine(sf::Vector2f(100, 600), sf::Vector2f(350, 350));
+	Temp = Map::DrawLine(sf::Vector2f(140, 600), sf::Vector2f(350, 350));
 	for (unsigned int c = 0; c < Temp.size(); c++)
 	{
 		_Map.push_back(Temp[c]);

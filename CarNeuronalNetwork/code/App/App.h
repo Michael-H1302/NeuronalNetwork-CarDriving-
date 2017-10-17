@@ -48,8 +48,8 @@ class App
 		std::vector<sf::RectangleShape*> _Sensors;
 		sf::RectangleShape _Car;
 		
-		float _LastDistance, _CurrentDistance;
-		sf::Clock _Timer;
+		float _BestDistance, _CurrentDistance;
+		int _MutationTimes;
 
 		/* NN Visualisierung */
 		std::vector<sf::RectangleShape*> _InputNeuronsV;
