@@ -23,7 +23,7 @@ void Connection::Mutate()
 {
 	_LastWeight = _Weight;
 
-	float Mutation = static_cast<float>(((rand() % 9 + 1) / 10.0f) - 0.5f);
+	float Mutation = static_cast<float>(((rand() % 3 + 1) / 10.0f) - 0.2f);
 
 	_Weight = _Weight + Mutation;
 }
@@ -31,4 +31,9 @@ void Connection::Mutate()
 void Connection::Restore()
 {
 	_Weight = _LastWeight;
+}
+
+float Connection::GetWeight()
+{
+	return _Weight;
 }

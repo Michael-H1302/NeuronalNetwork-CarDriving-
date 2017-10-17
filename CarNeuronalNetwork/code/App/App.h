@@ -30,6 +30,11 @@ class App
 		void ResetCar();
 		void CreateMap();
 		void CreateCar();
+		void CreateVisualNetwork();
+
+		void UpdateSensors();
+		void UpdateCar();
+		void UpdateConnections();
 
 		sf::RenderWindow _AppWindow;
 
@@ -45,4 +50,11 @@ class App
 		
 		float _LastDistance, _CurrentDistance;
 		sf::Clock _Timer;
+
+		/* NN Visualisierung */
+		std::vector<sf::RectangleShape*> _InputNeuronsV;
+		std::vector<sf::RectangleShape*> _HiddenNeuronsV;
+		std::vector<sf::RectangleShape*> _OutputNeuronsV;
+		std::vector<sf::RectangleShape*> _ConnectionsV;
+
 };

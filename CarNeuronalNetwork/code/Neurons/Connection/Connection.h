@@ -13,6 +13,8 @@ class Connection
 		void Mutate();
 		void Restore();
 
+		float GetWeight();
+
 	private:
 
 		Neuron *_In, *_Out;
