@@ -128,7 +128,8 @@ void App::UpdateCar()
 	_Sensors[2]->setPosition(_Car.getPosition());
 	_Sensors[2]->setRotation(45 + _Car.getRotation());
 
-	_Car.rotate(_Output[0]->GetValue());
+	float Rotation = (_Output[0]->GetValue() - 0.5f) * 2.5f;
+	_Car.rotate(Rotation);
 
 	float Speed = _Output[1]->GetValue();
 	float Radiant = ((2 * 3.14f) / 360) * _Car.getRotation();
@@ -147,7 +148,7 @@ void App::UpdateCar()
 	_Car.move(XMovement, YMovement);
 	_CurrentDistance = _CurrentDistance + abs(XMovement) + abs(YMovement);
 
-	this->Trainer(_Output[0]->GetValue());
+	this->Trainer(Rotation);
 }
 
 void App::UpdateConnections()
@@ -438,13 +439,14 @@ void App::Trainer(float Rotation)
 	/* Test Trainer */
 	if (_Balanced == false)
 	{
-		std::cout << "Rotation: " << Rotation << std::endl;
-		std::cout << "Last Rotation: " << _LastRotation << std::endl;
-		std::cout << std::endl;
+	//	std::cout << "Rotation: " << Rotation << std::endl;
+	//	std::cout << "Last Rotation: " << _LastRotation << std::endl;
+	//	std::cout << std::endl;
 
-		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && (abs(Rotation) - abs(_LastRotation)) > 0.5f && Rotation > 1.0f)		//Wenn der Linke Fühler die Wand berührt und das Auto sich nach rechts dreht UND	
+		//if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && (abs(Rotation) - abs(_LastRotation)) > 0.5f && Rotation > 1.0f)		//Wenn der Linke Fühler die Wand berührt und das Auto sich nach rechts dreht UND	
+		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && Rotation > 0 && abs(Rotation) - abs(_LastRotation) > 0.1f)
 		{
-			system("pause");
+	//		system("pause");
 			_Balanced = true;
 			std::cout << "Neuronalnet is balanced!" << std::endl;
 			for (unsigned int c = 0; c < _Connections.size(); c++)
@@ -452,9 +454,10 @@ void App::Trainer(float Rotation)
 				_Connections[c]->Safe();
 			}
 		}
-		if (_Sensors[2]->getFillColor() == sf::Color(255, 0, 0) && (abs(Rotation) - abs(_LastRotation)) > 0.5f && Rotation < -1.0f)
+		//if (_Sensors[2]->getFillColor() == sf::Color(255, 0, 0) && (abs(Rotation) - abs(_LastRotation)) > 0.5f && Rotation < -1.0f)
+		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && Rotation < 0 && abs(Rotation) - abs(_LastRotation) > 0.1f)
 		{
-			system("pause");
+	//		system("pause");
 			_Balanced = true;
 			std::cout << "Neuronalnet is balanced!" << std::endl;
 			for (unsigned int c = 0; c < _Connections.size(); c++)
@@ -520,7 +523,7 @@ void App::Trainer(float Rotation)
 				/* Versuche Netz zu verbessern */
 				for (unsigned int c = 0; c < _Connections.size(); c++)
 				{
-					_Connections[c]->Mutate(40);
+					_Connections[c]->Mutate(20);
 				}
 			}
 
