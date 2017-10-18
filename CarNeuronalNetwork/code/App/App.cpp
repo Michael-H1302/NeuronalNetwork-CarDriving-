@@ -16,7 +16,7 @@ App::App()
 	_BestDistance = 0;
 	_CurrentDistance = 0;
 	_LastRotation = 0;
-	_Balanced = false;
+	_Balanced = true;
 }
 
 
@@ -436,63 +436,6 @@ void App::CreateVisualNetwork()
 
 void App::Trainer(float Rotation)
 {
-	/* Test Trainer */
-	if (_Balanced == false)
-	{
-	//	std::cout << "Rotation: " << Rotation << std::endl;
-	//	std::cout << "Last Rotation: " << _LastRotation << std::endl;
-	//	std::cout << std::endl;
-
-		//if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && (abs(Rotation) - abs(_LastRotation)) > 0.5f && Rotation > 1.0f)		//Wenn der Linke Fühler die Wand berührt und das Auto sich nach rechts dreht UND	
-		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && Rotation > 0 && abs(Rotation) - abs(_LastRotation) > 0.1f)
-		{
-	//		system("pause");
-			_Balanced = true;
-			std::cout << "Neuronalnet is balanced!" << std::endl;
-			for (unsigned int c = 0; c < _Connections.size(); c++)
-			{
-				_Connections[c]->Safe();
-			}
-		}
-		//if (_Sensors[2]->getFillColor() == sf::Color(255, 0, 0) && (abs(Rotation) - abs(_LastRotation)) > 0.5f && Rotation < -1.0f)
-		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && Rotation < 0 && abs(Rotation) - abs(_LastRotation) > 0.1f)
-		{
-	//		system("pause");
-			_Balanced = true;
-			std::cout << "Neuronalnet is balanced!" << std::endl;
-			for (unsigned int c = 0; c < _Connections.size(); c++)
-			{
-				_Connections[c]->Safe();
-			}
-		}
-
-		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && abs(Rotation) <= abs(_LastRotation))
-		{
-			std::cout << "Bad output! Creating new neuralnet..." << std::endl;
-
-			this->DeleteNetwork();
-			this->CreateNewNetwork();
-			this->ResetCar();
-			_BestDistance = 0;
-			_CurrentDistance = 0;
-			_Balanced = false;
-		}
-
-		if (_Sensors[2]->getFillColor() == sf::Color(255, 0, 0) && abs(Rotation) <= abs(_LastRotation))
-		{
-			std::cout << "Bad output! Creating new neuralnet..." << std::endl;
-
-			this->DeleteNetwork();
-			this->CreateNewNetwork();
-			this->ResetCar();
-			_BestDistance = 0;
-			_CurrentDistance = 0;
-			_Balanced = false;
-		}
-
-		_LastRotation = Rotation;
-	}
-
 	for (unsigned int c = 0; c < _Map.size(); c++)
 	{
 		if (_Car.getGlobalBounds().intersects(_Map[c]->getGlobalBounds()))
