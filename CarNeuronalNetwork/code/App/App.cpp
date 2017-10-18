@@ -76,73 +76,12 @@ void App::Update()
 	this->UpdateSensors();
 	this->UpdateConnections();
 	this->UpdateCar();
-
-	/* Trainer um nicht gegen eine Wand zu fahren 
-	for (unsigned int c = 0; c < _Map.size(); c++)
-	{
-		if (_Car.getGlobalBounds().intersects(_Map[c]->getGlobalBounds()))
-		{
-			std::cout << "Distance: " << _CurrentDistance << std::endl;
-
-			if (_CurrentDistance > _BestDistance + 20) //Wenn die aktuelle Distanz größer ist als die bisher beste Distanz
-			{
-				std::cout << "Best Distance! Safing..." << std::endl;
-				for (unsigned int c = 0; c < _Connections.size(); c++)	 //Dann speichere das aktuelle Netz, sodass es bei einer Verschlechterung wieder hergestellt werden kann
-				{
-					_Connections[c]->Safe();	
-				}
-				for (unsigned int c = 0; c < _Connections.size(); c++)	//Versuche das Netz zu verbessern
-				{
-					_Connections[c]->Mutate();
-				}
-
-				_BestDistance = _CurrentDistance;	//Speichere die aktuelle Distanz als beste Distanz
-
-				_MutationTimes = 0;
-				_CurrentDistance = 0;		//Aktuelle Distanz 0
-				this->ResetCar();			//Car resetten
-
-				return;
-			}
-			if (_CurrentDistance <= _BestDistance && _MutationTimes < 20)	 //Wenn die gerade erziehlte Distanz kleiner ist als die beste Distanz -> nachsehen wie viele Generationen die beste Distanz zurückliegt
-			{																//Das Netz hat 20 Mutationen Zeit, seine letzte beste Leistung zu übertreffen, ansonsten -> zurücksetzen auf letzen besten Stand
-				std::cout << "Mutating... Mutation " << _MutationTimes << "/" << "20" << std::endl;
-
-				for (unsigned int c = 0; c < _Connections.size(); c++)
-				{
-					_Connections[c]->Mutate();
-				}
-
-				_MutationTimes++;
-				_CurrentDistance = 0;
-				this->ResetCar();
-
-				return;
-			}
-			if (_MutationTimes >= 10) //Wenn nach 10 Mutationen die alte beste Distanz nicht übertroffen wurde -> zurücksetzen
-			{
-				std::cout << "Evolution failed! Restoring old neural net..." << std::endl;
-				for (unsigned int c = 0; c < _Connections.size(); c++)	 //Dann speichere das aktuelle Netz, sodass es bei einer Verschlechterung wieder hergestellt werden kann
-				{
-					_Connections[c]->Restore();
-				}
-				for (unsigned int c = 0; c < _Connections.size(); c++)	//Neu versuchen
-				{
-					_Connections[c]->Mutate();
-				}
-
-				_MutationTimes = 0;
-				_CurrentDistance = 0;
-				this->ResetCar();
-			}
-		}
-	}*/
 }
 
 void App::UpdateSensors()
 {
 	/* Input Werte setzen */
-	float Value1 = 6;
+	float Value1 = 9;
 	_Sensors[0]->setFillColor(sf::Color(0, 255, 0));
 	for (unsigned int c = 0; c < _Map.size(); c++)
 	{
@@ -154,7 +93,7 @@ void App::UpdateSensors()
 	}
 	_Input[0]->SetValue(Value1);
 
-	float Value2 = 6;//2
+	float Value2 = 9;//2
 	_Sensors[1]->setFillColor(sf::Color(0, 255, 0));
 	for (unsigned int c = 0; c < _Map.size(); c++)
 	{
@@ -166,7 +105,7 @@ void App::UpdateSensors()
 	}
 	_Input[1]->SetValue(Value2);
 
-	float Value3 = 6;//2
+	float Value3 = 9;//2
 	_Sensors[2]->setFillColor(sf::Color(0, 255, 0));
 	for (unsigned int c = 0; c < _Map.size(); c++)
 	{
@@ -350,14 +289,14 @@ void App::CreateMap()
 	_Map[_Map.size() - 1]->setSize(sf::Vector2f(50, 5));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 
-	Temp = Map::DrawLine(sf::Vector2f(650, 350), sf::Vector2f(750, 650));
+	Temp = Map::DrawLine(sf::Vector2f(650, 350), sf::Vector2f(850, 650));
 	for (unsigned int c = 0; c < Temp.size(); c++)
 	{
 		_Map.push_back(Temp[c]);
 	}
 	Temp.clear();
 
-	Temp = Map::DrawLine(sf::Vector2f(500, 550), sf::Vector2f(550, 700));
+	Temp = Map::DrawLine(sf::Vector2f(500, 550), sf::Vector2f(650, 700));
 	for (unsigned int c = 0; c < Temp.size(); c++)
 	{
 		_Map.push_back(Temp[c]);
@@ -365,28 +304,38 @@ void App::CreateMap()
 	Temp.clear();
 
 	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(750, 650);
+	_Map[_Map.size() - 1]->setPosition(850, 650);
 	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 50));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 
 	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(550, 700);
+	_Map[_Map.size() - 1]->setPosition(650, 700);
 	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 100));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 
-	Temp = Map::DrawLine(sf::Vector2f(750, 700), sf::Vector2f(900, 850));
+	Temp = Map::DrawLine(sf::Vector2f(850, 700), sf::Vector2f(950, 815));
 	for (unsigned int c = 0; c < Temp.size(); c++)
 	{
 		_Map.push_back(Temp[c]);
 	}
 	Temp.clear();
 
-	Temp = Map::DrawLine(sf::Vector2f(550, 800), sf::Vector2f(700, 950));
+	Temp = Map::DrawLine(sf::Vector2f(650, 800), sf::Vector2f(800, 950));
 	for (unsigned int c = 0; c < Temp.size(); c++)
 	{
 		_Map.push_back(Temp[c]);
 	}
 	Temp.clear();
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(950, 815);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(150, 5));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(800, 950);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(200, 5));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 }
 
 void App::CreateCar()
@@ -486,24 +435,6 @@ void App::CreateVisualNetwork()
 
 void App::Trainer(float Rotation)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
-	{
-		for (unsigned int c = 0; c < _Connections.size(); c++)
-		{
-			_Connections[c]->Restore();
-		}
-		for (unsigned int c = 0; c < _Map.size(); c++)
-		{
-			if (_Car.getGlobalBounds().intersects(_Map[c]->getGlobalBounds()))
-			{
-				_CurrentDistance = 0;
-				this->ResetCar();
-			}
-		}
-
-		return;
-	}
-
 	/* Test Trainer */
 	if (_Balanced == false)
 	{
@@ -511,7 +442,7 @@ void App::Trainer(float Rotation)
 		std::cout << "Last Rotation: " << _LastRotation << std::endl;
 		std::cout << std::endl;
 
-		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && abs(Rotation) - abs(_LastRotation) > 0.5f  && abs(Rotation) - abs(_LastRotation) < 2.5f && Rotation > 0)		//Wenn der Linke Fühler die Wand berührt und das Auto sich nach rechts dreht UND	
+		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && (abs(Rotation) - abs(_LastRotation)) > 0.5f && Rotation > 1.0f)		//Wenn der Linke Fühler die Wand berührt und das Auto sich nach rechts dreht UND	
 		{
 			system("pause");
 			_Balanced = true;
@@ -521,7 +452,7 @@ void App::Trainer(float Rotation)
 				_Connections[c]->Safe();
 			}
 		}
-		if (_Sensors[2]->getFillColor() == sf::Color(255, 0, 0) && abs(Rotation) - abs(_LastRotation) > 0.5f  && abs(Rotation) - abs(_LastRotation) < 2.5f&& Rotation < 0)
+		if (_Sensors[2]->getFillColor() == sf::Color(255, 0, 0) && (abs(Rotation) - abs(_LastRotation)) > 0.5f && Rotation < -1.0f)
 		{
 			system("pause");
 			_Balanced = true;
@@ -589,12 +520,13 @@ void App::Trainer(float Rotation)
 				/* Versuche Netz zu verbessern */
 				for (unsigned int c = 0; c < _Connections.size(); c++)
 				{
-					_Connections[c]->Mutate(12);
+					_Connections[c]->Mutate(40);
 				}
 			}
 
 			_CurrentDistance = 0;
 			this->ResetCar();
+			return;
 		}
 	}
 }
