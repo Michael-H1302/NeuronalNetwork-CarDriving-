@@ -36,6 +36,8 @@ class App
 		void UpdateCar();
 		void UpdateConnections();
 
+		void Trainer(float Rotation);
+
 		sf::RenderWindow _AppWindow;
 
 		std::vector<sf::RectangleShape*> _Map;
@@ -48,8 +50,8 @@ class App
 		std::vector<sf::RectangleShape*> _Sensors;
 		sf::RectangleShape _Car;
 		
-		float _BestDistance, _CurrentDistance;
-		int _MutationTimes;
+		float _BestDistance, _CurrentDistance, _LastRotation;
+		bool _Balanced;
 
 		/* NN Visualisierung */
 		std::vector<sf::RectangleShape*> _InputNeuronsV;

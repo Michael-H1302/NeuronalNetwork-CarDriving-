@@ -10,7 +10,7 @@ class Connection
 
 		void SetNeurons(Neuron* In, Neuron* Out);
 		void Update();
-		void Mutate();
+		void Mutate(float Strength);
 		void Restore();
 		void Safe();
 

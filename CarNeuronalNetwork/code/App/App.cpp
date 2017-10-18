@@ -15,7 +15,8 @@ App::App()
 
 	_BestDistance = 0;
 	_CurrentDistance = 0;
-	_MutationTimes = 0;
+	_LastRotation = 0;
+	_Balanced = false;
 }
 
 
@@ -76,7 +77,7 @@ void App::Update()
 	this->UpdateConnections();
 	this->UpdateCar();
 
-	/* Trainer um nicht gegen eine Wand zu fahren */
+	/* Trainer um nicht gegen eine Wand zu fahren 
 	for (unsigned int c = 0; c < _Map.size(); c++)
 	{
 		if (_Car.getGlobalBounds().intersects(_Map[c]->getGlobalBounds()))
@@ -135,18 +136,7 @@ void App::Update()
 				this->ResetCar();
 			}
 		}
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
-	{
-		_MutationTimes = 0;
-		_BestDistance = 0;
-		_CurrentDistance = 0;
-		std::cout << "Creating new network..." << std::endl;
-		this->DeleteNetwork();
-		this->CreateNewNetwork();
-		this->ResetCar();
-	}
+	}*/
 }
 
 void App::UpdateSensors()
@@ -199,20 +189,12 @@ void App::UpdateCar()
 	_Sensors[2]->setPosition(_Car.getPosition());
 	_Sensors[2]->setRotation(45 + _Car.getRotation());
 
-	_Car.rotate(_Output[0]->GetValue() - 0.5f);
-	/*if (_Output[0]->GetValue() > 0.5f)//0.7
-	{
-	_Car.rotate(1);
-	}
-	if (_Output[0]->GetValue() < 0.5f)//0.3
-	{
-	_Car.rotate(-1);
-	}*/
+	_Car.rotate(_Output[0]->GetValue());
 
 	float Speed = _Output[1]->GetValue();
 	float Radiant = ((2 * 3.14f) / 360) * _Car.getRotation();
-	float YMovement = cos(Radiant) * Speed + cos(Radiant) * 1.2f;//5
-	float XMovement = sin(Radiant) * Speed + sin(Radiant) * 1.2f;//5
+	float YMovement = cos(Radiant) * (abs(Speed) + 1.0f);//5
+	float XMovement = sin(Radiant) * (abs(Speed) + 1.0f);//5
 
 	if (_Car.getRotation() > 270 || _Car.getRotation() < 90)
 	{
@@ -222,8 +204,11 @@ void App::UpdateCar()
 	{
 		YMovement = abs(YMovement);
 	}
+
 	_Car.move(XMovement, YMovement);
 	_CurrentDistance = _CurrentDistance + abs(XMovement) + abs(YMovement);
+
+	this->Trainer(_Output[0]->GetValue());
 }
 
 void App::UpdateConnections()
@@ -318,7 +303,7 @@ void App::DeleteNetwork()
 
 void App::ResetCar()
 {
-	_Car.setPosition(200, 850);
+	_Car.setPosition(225, 850);
 	_Car.setRotation(0);
 }
 
@@ -326,12 +311,17 @@ void App::CreateMap()
 {
 	_Map.push_back(new sf::RectangleShape);
 	_Map[_Map.size() - 1]->setPosition(140, 600);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(10, 350));
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 300));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 
 	_Map.push_back(new sf::RectangleShape);
 	_Map[_Map.size() - 1]->setPosition(300, 700);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(10, 250));
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 200));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(140, 900);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(165, 5));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 
 	std::vector<sf::RectangleShape*> Temp;
@@ -404,7 +394,7 @@ void App::CreateCar()
 	_Car.setFillColor(sf::Color(255, 255, 255));
 	_Car.setSize(sf::Vector2f(64, 64));
 	_Car.setOrigin(32, 32);
-	_Car.setPosition(200, 850);
+	this->ResetCar();
 
 	_Sensors.push_back(new sf::RectangleShape);
 	_Sensors[_Sensors.size() - 1]->setFillColor(sf::Color(0, 255, 0));
@@ -490,6 +480,121 @@ void App::CreateVisualNetwork()
 			_ConnectionsV[_ConnectionsV.size() - 1]->setSize(sf::Vector2f(Distance, 1));
 			_ConnectionsV[_ConnectionsV.size() - 1]->setRotation(Degree);
 			_ConnectionsV[_ConnectionsV.size() - 1]->setFillColor(sf::Color(0, 255, 0));
+		}
+	}
+}
+
+void App::Trainer(float Rotation)
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+	{
+		for (unsigned int c = 0; c < _Connections.size(); c++)
+		{
+			_Connections[c]->Restore();
+		}
+		for (unsigned int c = 0; c < _Map.size(); c++)
+		{
+			if (_Car.getGlobalBounds().intersects(_Map[c]->getGlobalBounds()))
+			{
+				_CurrentDistance = 0;
+				this->ResetCar();
+			}
+		}
+
+		return;
+	}
+
+	/* Test Trainer */
+	if (_Balanced == false)
+	{
+		std::cout << "Rotation: " << Rotation << std::endl;
+		std::cout << "Last Rotation: " << _LastRotation << std::endl;
+		std::cout << std::endl;
+
+		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && abs(Rotation) - abs(_LastRotation) > 0.5f  && abs(Rotation) - abs(_LastRotation) < 2.5f && Rotation > 0)		//Wenn der Linke Fühler die Wand berührt und das Auto sich nach rechts dreht UND	
+		{
+			system("pause");
+			_Balanced = true;
+			std::cout << "Neuronalnet is balanced!" << std::endl;
+			for (unsigned int c = 0; c < _Connections.size(); c++)
+			{
+				_Connections[c]->Safe();
+			}
+		}
+		if (_Sensors[2]->getFillColor() == sf::Color(255, 0, 0) && abs(Rotation) - abs(_LastRotation) > 0.5f  && abs(Rotation) - abs(_LastRotation) < 2.5f&& Rotation < 0)
+		{
+			system("pause");
+			_Balanced = true;
+			std::cout << "Neuronalnet is balanced!" << std::endl;
+			for (unsigned int c = 0; c < _Connections.size(); c++)
+			{
+				_Connections[c]->Safe();
+			}
+		}
+
+		if (_Sensors[0]->getFillColor() == sf::Color(255, 0, 0) && abs(Rotation) <= abs(_LastRotation))
+		{
+			std::cout << "Bad output! Creating new neuralnet..." << std::endl;
+
+			this->DeleteNetwork();
+			this->CreateNewNetwork();
+			this->ResetCar();
+			_BestDistance = 0;
+			_CurrentDistance = 0;
+			_Balanced = false;
+		}
+
+		if (_Sensors[2]->getFillColor() == sf::Color(255, 0, 0) && abs(Rotation) <= abs(_LastRotation))
+		{
+			std::cout << "Bad output! Creating new neuralnet..." << std::endl;
+
+			this->DeleteNetwork();
+			this->CreateNewNetwork();
+			this->ResetCar();
+			_BestDistance = 0;
+			_CurrentDistance = 0;
+			_Balanced = false;
+		}
+
+		_LastRotation = Rotation;
+	}
+
+	for (unsigned int c = 0; c < _Map.size(); c++)
+	{
+		if (_Car.getGlobalBounds().intersects(_Map[c]->getGlobalBounds()))
+		{
+			if (_Balanced == true)
+			{
+				/* Wenn die Bestleistung übertroffen wurde -> speichern */
+				if (_CurrentDistance > _BestDistance)
+				{
+					_BestDistance = _CurrentDistance;
+					std::cout << "Best distance: " << _BestDistance << "! Safing..." << std::endl;
+					for (unsigned int c = 0; c < _Connections.size(); c++)
+					{
+						_Connections[c]->Safe();
+					}
+				}
+
+				/* Wenn die Bestleistung nicht erreicht wurde -> restoren*/
+				if (_CurrentDistance <= _BestDistance)
+				{
+					std::cout << "Bad evolution! Jumping back to the latest safe point! Restoring..." << std::endl;
+					for (unsigned int c = 0; c < _Connections.size(); c++)
+					{
+						_Connections[c]->Restore();
+					}
+				}
+
+				/* Versuche Netz zu verbessern */
+				for (unsigned int c = 0; c < _Connections.size(); c++)
+				{
+					_Connections[c]->Mutate(12);
+				}
+			}
+
+			_CurrentDistance = 0;
+			this->ResetCar();
 		}
 	}
 }
