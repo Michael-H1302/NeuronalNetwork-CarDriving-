@@ -5,6 +5,11 @@ App::App()
 	_AppWindow.create(sf::VideoMode(1920, 1080), "CarNeuronalNetwork");
 	//_AppWindow.setFramerateLimit(60);
 
+	sf::View view = _AppWindow.getView();
+	view.setCenter(view.getCenter().x, view.getCenter().y + 300);
+	_AppWindow.setView(view);
+
+
 	srand(static_cast<unsigned int>(time(NULL)));
 
 	
@@ -16,7 +21,6 @@ App::App()
 	_BestDistance = 0;
 	_CurrentDistance = 0;
 	_LastRotation = 0;
-	_Balanced = true;
 }
 
 
@@ -128,13 +132,13 @@ void App::UpdateCar()
 	_Sensors[2]->setPosition(_Car.getPosition());
 	_Sensors[2]->setRotation(45 + _Car.getRotation());
 
-	float Rotation = (_Output[0]->GetValue() - 0.5f) * 2.5f;
+	float Rotation = (_Output[0]->GetValue() - 0.5f) * 3.5f;
 	_Car.rotate(Rotation);
 
 	float Speed = _Output[1]->GetValue();
 	float Radiant = ((2 * 3.14f) / 360) * _Car.getRotation();
-	float YMovement = cos(Radiant) * (abs(Speed) + 1.0f);//5
-	float XMovement = sin(Radiant) * (abs(Speed) + 1.0f);//5
+	float YMovement = cos(Radiant) * (abs(Speed) + 1.4f);//5
+	float XMovement = sin(Radiant) * (abs(Speed) + 1.4f);//5
 
 	if (_Car.getRotation() > 270 || _Car.getRotation() < 90)
 	{
@@ -256,12 +260,7 @@ void App::CreateMap()
 
 	_Map.push_back(new sf::RectangleShape);
 	_Map[_Map.size() - 1]->setPosition(300, 700);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 200));
-	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
-
-	_Map.push_back(new sf::RectangleShape);
-	_Map[_Map.size() - 1]->setPosition(140, 900);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(165, 5));
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 110));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 
 	std::vector<sf::RectangleShape*> Temp;
@@ -330,20 +329,107 @@ void App::CreateMap()
 
 	_Map.push_back(new sf::RectangleShape);
 	_Map[_Map.size() - 1]->setPosition(950, 815);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(150, 5));
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(20, 5));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
 
 	_Map.push_back(new sf::RectangleShape);
 	_Map[_Map.size() - 1]->setPosition(800, 950);
-	_Map[_Map.size() - 1]->setSize(sf::Vector2f(200, 5));
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(280, 5));
 	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	Temp = Map::DrawLine(sf::Vector2f(1080, 950), sf::Vector2f(1280, 750));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	Temp = Map::DrawLine(sf::Vector2f(970, 815), sf::Vector2f(1250, 515));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(1280, 750);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(50, 5));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(1250, 515);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(120, 5));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	Temp = Map::DrawLine(sf::Vector2f(1320, 750), sf::Vector2f(1520, 950));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	Temp = Map::DrawLine(sf::Vector2f(1370, 515), sf::Vector2f(1720, 865));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(1720, 865);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 300));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(1520, 950);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(5, 115));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	Temp = Map::DrawLine(sf::Vector2f(1620, 1265), sf::Vector2f(1720, 1165));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	Temp = Map::DrawLine(sf::Vector2f(1470, 1115), sf::Vector2f(1520, 1065));
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(510, 1115);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(960, 5));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	_Map.push_back(new sf::RectangleShape);
+	_Map[_Map.size() - 1]->setPosition(400, 1265);
+	_Map[_Map.size() - 1]->setSize(sf::Vector2f(1220, 5));
+	_Map[_Map.size() - 1]->setFillColor(sf::Color(0, 0, 255));
+
+	Temp = Map::DrawLine(sf::Vector2f(300, 810), sf::Vector2f(510, 1115)); 
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
+	Temp = Map::DrawLine(sf::Vector2f(140, 900), sf::Vector2f(400, 1265)); //x: 360 y:365
+	for (unsigned int c = 0; c < Temp.size(); c++)
+	{
+		_Map.push_back(Temp[c]);
+	}
+	Temp.clear();
+
 }
 
 void App::CreateCar()
 {
 	_Car.setFillColor(sf::Color(255, 255, 255));
-	_Car.setSize(sf::Vector2f(64, 64));
-	_Car.setOrigin(32, 32);
+	_Car.setSize(sf::Vector2f(48, 64));
+	_Car.setOrigin(24, 32);
 	this->ResetCar();
 
 	_Sensors.push_back(new sf::RectangleShape);
@@ -370,30 +456,30 @@ void App::CreateCar()
 
 void App::CreateVisualNetwork()
 {
-	for (unsigned int y = 100; y < 220; y = y + 40)
+	for (unsigned int y = 400; y < 520; y = y + 40)
 	{
 		_InputNeuronsV.push_back(new sf::RectangleShape);
 		_InputNeuronsV[_InputNeuronsV.size() - 1]->setSize(sf::Vector2f(16, 16));
 		_InputNeuronsV[_InputNeuronsV.size() - 1]->setFillColor(sf::Color(0, 255, 0));
-		_InputNeuronsV[_InputNeuronsV.size() - 1]->setPosition(1200, static_cast<float>(y));
+		_InputNeuronsV[_InputNeuronsV.size() - 1]->setPosition(1450, static_cast<float>(y));
 		_InputNeuronsV[_InputNeuronsV.size() - 1]->setOrigin(8, 8);
 	}
 
-	for (unsigned int y = 60; y < 260; y = y + 40)
+	for (unsigned int y = 360; y < 560; y = y + 40)
 	{
 		_HiddenNeuronsV.push_back(new sf::RectangleShape);
 		_HiddenNeuronsV[_HiddenNeuronsV.size() - 1]->setSize(sf::Vector2f(16, 16));
 		_HiddenNeuronsV[_HiddenNeuronsV.size() - 1]->setFillColor(sf::Color(150, 150, 150));
-		_HiddenNeuronsV[_HiddenNeuronsV.size() - 1]->setPosition(1350, static_cast<float>(y));
+		_HiddenNeuronsV[_HiddenNeuronsV.size() - 1]->setPosition(1600, static_cast<float>(y));
 		_HiddenNeuronsV[_HiddenNeuronsV.size() - 1]->setOrigin(8, 8);
 	}
 
-	for (unsigned int y = 100; y < 220; y = y + 40)
+	for (unsigned int y = 400; y < 520; y = y + 40)
 	{
 		_OutputNeuronsV.push_back(new sf::RectangleShape);
 		_OutputNeuronsV[_OutputNeuronsV.size() - 1]->setSize(sf::Vector2f(16, 16));
 		_OutputNeuronsV[_OutputNeuronsV.size() - 1]->setFillColor(sf::Color(255, 0, 0));
-		_OutputNeuronsV[_OutputNeuronsV.size() - 1]->setPosition(1500, static_cast<float>(y));
+		_OutputNeuronsV[_OutputNeuronsV.size() - 1]->setPosition(1750, static_cast<float>(y));
 		_OutputNeuronsV[_OutputNeuronsV.size() - 1]->setOrigin(8, 8);
 	}
 
@@ -440,35 +526,33 @@ void App::Trainer(float Rotation)
 	{
 		if (_Car.getGlobalBounds().intersects(_Map[c]->getGlobalBounds()))
 		{
-			if (_Balanced == true)
+			/* Wenn die Bestleistung übertroffen wurde -> speichern */
+			if (_CurrentDistance > _BestDistance)
 			{
-				/* Wenn die Bestleistung übertroffen wurde -> speichern */
-				if (_CurrentDistance > _BestDistance)
-				{
-					_BestDistance = _CurrentDistance;
-					std::cout << "Best distance: " << _BestDistance << "! Safing..." << std::endl;
-					for (unsigned int c = 0; c < _Connections.size(); c++)
-					{
-						_Connections[c]->Safe();
-					}
-				}
-
-				/* Wenn die Bestleistung nicht erreicht wurde -> restoren*/
-				if (_CurrentDistance <= _BestDistance)
-				{
-					std::cout << "Bad evolution! Jumping back to the latest safe point! Restoring..." << std::endl;
-					for (unsigned int c = 0; c < _Connections.size(); c++)
-					{
-						_Connections[c]->Restore();
-					}
-				}
-
-				/* Versuche Netz zu verbessern */
+				_BestDistance = _CurrentDistance;
+				std::cout << "Best distance: " << _BestDistance << "! Safing..." << std::endl;
 				for (unsigned int c = 0; c < _Connections.size(); c++)
 				{
-					_Connections[c]->Mutate(20);
+					_Connections[c]->Safe();
 				}
 			}
+
+			/* Wenn die Bestleistung nicht erreicht wurde -> restoren*/
+			if (_CurrentDistance <= _BestDistance)
+			{
+				std::cout << "Bad evolution! Jumping back to the latest safe point! Restoring..." << std::endl;
+				for (unsigned int c = 0; c < _Connections.size(); c++)
+				{
+					_Connections[c]->Restore();
+				}
+			}
+
+			/* Versuche Netz zu verbessern */
+			for (unsigned int c = 0; c < _Connections.size(); c++)
+			{
+				_Connections[c]->Mutate(20);
+			}
+			
 
 			_CurrentDistance = 0;
 			this->ResetCar();

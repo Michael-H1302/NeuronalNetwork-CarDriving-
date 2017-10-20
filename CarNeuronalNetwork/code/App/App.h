@@ -51,7 +51,6 @@ class App
 		sf::RectangleShape _Car;
 		
 		float _BestDistance, _CurrentDistance, _LastRotation;
-		bool _Balanced;
 
 		/* NN Visualisierung */
 		std::vector<sf::RectangleShape*> _InputNeuronsV;
